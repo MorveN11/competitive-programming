@@ -24,19 +24,19 @@ using namespace std;
 #define chrInt(chr) (int)chr - 48
 #define ensp(i, n) (" \n"[i == n - 1])
 
-template <typename... T>
-void cinn(T &...args)
-{
-  ((cin >> args), ...);
-}
+// template <typename... T>
+// void cinn(T &...args)
+// {
+//   ((cin >> args), ...);
+// }
 
-template <typename... T>
-void coutt(const T &...args)
-{
-  __typeof(sizeof...(T)) i = 1;
-  ((cout << args << (i++ != sizeof...(T) ? " " : "")), ...);
-  cout << '\n';
-}
+// template <typename... T>
+// void coutt(const T &...args)
+// {
+//   __typeof(sizeof...(T)) i = 1;
+//   ((cout << args << (i++ != sizeof...(T) ? " " : "")), ...);
+//   cout << '\n';
+// }
 
 template <typename T>
 void couts(const T &xs)
@@ -107,11 +107,8 @@ int main()
 }
 
 const ll MAXN = 202020;
-vi gifts;
-vi orderGifts;
-vvi dp;
+vector<pair<int, int>> activities;
 int n;
-bool notSubt = false;
 
 void init()
 {
@@ -121,38 +118,30 @@ void exit()
 {
 }
 
-int editDist(vi array1, vi array2)
+int getMaxActitivities()
 {
-  for (int i = 0; i <= n; i++)
+  int ans = 1;
+  int index = 0;
+  rep(i, 1, n)
   {
-    for (int j = 0; j <= n; j++)
+    if (activities[i].F > activities[index].S)
     {
-      if (i == 0)
-        dp[i][j] = j;
-      else if (j == 0)
-        dp[i][j] = i;
-      else if (array1[i - 1] == array2[j - 1])
-        dp[i][j] = dp[i - 1][j - 1];
-      else
-        dp[i][j] = 1 + min(min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
+      ans++;
+      index = i;
     }
   }
-  return dp[n][n];
+  return ans;
 }
 
 void solve()
 {
-  cinn(n);
-  gifts.resize(n);
-  orderGifts.resize(n);
-  dp.resize(n + 1, vi(n + 1, 0));
+  cin >> n;
+  activities.resize(n);
   rep(i, 0, n)
   {
-    int x;
-    cinn(x);
-    gifts[i] = x;
-    orderGifts[i] = x;
+    cin >> activities[i].F >> activities[i].S;
   }
-  sortt(orderGifts);
-  coutt(editDist(orderGifts, gifts));
+  sort(all(activities), [](pair<int, int> a, pair<int, int> b)
+       { return a.S < b.S; });
+  cout << getMaxActitivities() << endl;
 }
